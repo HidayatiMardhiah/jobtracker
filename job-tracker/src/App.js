@@ -1,17 +1,23 @@
+// App.js
 import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Dashboard from "./Dashboard";
 import Form from "./Form";
+import "./App.css";
 
-export default function App() {
+function App() {
   const [jobs, setJobs] = useState([]);
 
-  // Load jobs from localStorage when app starts
+  // Load jobs from localStorage safely
   useEffect(() => {
     const savedJobs = JSON.parse(localStorage.getItem("jobs") || "[]");
-    setJobs(savedJobs);
+    const validJobs = savedJobs.filter(job => job !== null && typeof job === "object");
+    setJobs(validJobs);
   }, []);
 
   // Add a new job
   const addJob = (job) => {
+    if (!job || typeof job !== "object") return;
     const updatedJobs = [...jobs, job];
     setJobs(updatedJobs);
     localStorage.setItem("jobs", JSON.stringify(updatedJobs));
@@ -25,45 +31,18 @@ export default function App() {
   };
 
   return (
-    <div>
-      <h1>Job Application Tracker</h1>
-      {/* Pass addJob function to your Form */}
-      <Form addJob={addJob} />
-
-      {/* Dashboard */}
-      <h2>All Applications</h2>
-      {jobs.length === 0 ? (
-        <p>No applications yet.</p>
-      ) : (
-        <table border="1" cellPadding="5">
-          <thead>
-            <tr>
-              <th>Company</th>
-              <th>Location</th>
-              <th>Role</th>
-              <th>Status</th>
-              <th>Date</th>
-              <th>Notes</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {jobs.map((job, index) => (
-              <tr key={index}>
-                <td>{job.companyName}</td>
-                <td>{job.location}</td>
-                <td>{job.role}</td>
-                <td>{job.selectedOption}</td>
-                <td>{job.selectedDate}</td>
-                <td>{job.notes}</td>
-                <td>
-                  <button onClick={() => deleteJob(index)}>Delete</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-    </div>
+    <Router>
+      <div className="app-container">
+        <Routes>
+          <Route
+            path="/"
+            element={<Dashboard jobs={jobs} deleteJob={deleteJob} />}
+          />
+          <Route path="/form" element={<Form addJob={addJob} />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
+
+export default App;
