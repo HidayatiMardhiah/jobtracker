@@ -7,9 +7,11 @@ function Dashboard({ jobs, deleteJob }) {
     <div className="dashboard-container">
       <h1>Job Application Tracker</h1>
 
-      <Link to="/form">
-        <button className="add-job-button">Add New Job Application</button>
+      <div className="center-button">
+      <Link to="/form" className="add-job-button">
+        Add New Job Application
       </Link>
+      </div>
 
       <h2>All Applications</h2>
 

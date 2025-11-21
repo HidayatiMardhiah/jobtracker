@@ -25,22 +25,21 @@ h2 {
   color: #555;
 }
 
+.center-button {
+  text-align: center; /* centers inline/inline-block elements */
+}
+
+/* Style the Link to look like a button */
 .add-job-button {
-  display: block;
-  margin: 20px auto;
+  display: inline-block; /* needed for text-align:center to work */
   padding: 10px 25px;
   background-color: #4caf50;
   color: #fff;
-  border: none;
   border-radius: 6px;
-  cursor: pointer;
   font-size: 16px;
+  text-decoration: none; /* remove underline */
+  cursor: pointer;
 }
-
-.add-job-button:hover {
-  background-color: #45a049;
-}
-
 table {
   width: 100%;
   border-collapse: collapse;
