@@ -77,3 +77,8 @@ button[type="button"] {
 button:hover {
   opacity: 0.9;
 }
+
+.goBack {
+  font-family: 'Courier New', monospace;
+  margin-right: 250px;
+}

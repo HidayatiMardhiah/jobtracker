@@ -64,7 +64,7 @@ function Form({ addJob, updateJob }) {
 
   return (
     <div className="form-container">
-      <button onClick={handleGoBack}>Go Back</button>
+      <button className ="goBack" onClick={handleGoBack}>Go Back</button>
       <h1>{editingJob ? "Edit Job Details" : "Add Job Details"}</h1>
       <form onSubmit={handleSubmit}>
         <label htmlFor="companyname">Company Name</label>

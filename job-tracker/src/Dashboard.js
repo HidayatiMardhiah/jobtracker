@@ -48,8 +48,8 @@ function Dashboard({ jobs, deleteJob }) {
                   <td>{job.selectedDate}</td>
                   <td>{job.notes}</td>
                   <td>
-                    <button onClick={() => deleteJob(index)}>Delete</button>
-                    <button onClick={() => handleEdit(job)}>Edit</button>
+                    <button className="delete-button" onClick={() => deleteJob(index)}>Delete</button>
+                    <button className="edit-button" onClick={() => handleEdit(job)}>Edit</button>
                   </td>
                 </tr>
               ) : null
