@@ -8,24 +8,38 @@ import "./App.css";
 function App() {
   const [jobs, setJobs] = useState([]);
 
-  // Load jobs from localStorage safely
+  // Load jobs from localStorage on mount
   useEffect(() => {
-    const savedJobs = JSON.parse(localStorage.getItem("jobs") || "[]");
-    const validJobs = savedJobs.filter(job => job !== null && typeof job === "object");
-    setJobs(validJobs);
-  }, []);
+    const savedJobs = localStorage.getItem("jobs");
+    if (savedJobs) {
+      setJobs(JSON.parse(savedJobs));
+    }
+  } , []);
 
-  // Add a new job
-  const addJob = (job) => {
-    if (!job || typeof job !== "object") return;
-    const updatedJobs = [...jobs, job];
+  // Add a new job with unique ID
+  const addJob = (newJob) => {
+    const jobWithId = {
+      ...newJob,
+      id: Date.now().toString(), // Simple unique ID
+    };
+    
+    const updatedJobs = [...jobs, jobWithId];
     setJobs(updatedJobs);
     localStorage.setItem("jobs", JSON.stringify(updatedJobs));
   };
 
-  // Delete a job
-  const deleteJob = (index) => {
-    const updatedJobs = jobs.filter((_, i) => i !== index);
+  // Update existing job by ID
+  const updateJob = (updatedJob) => {
+    const updatedJobs = jobs.map((job) =>
+      job.id === updatedJob.id ? updatedJob : job
+    );
+    setJobs(updatedJobs);
+    localStorage.setItem("jobs", JSON.stringify(updatedJobs));
+  };
+
+  // Delete job by index
+  const deleteJob = (jobId) => {
+     const updatedJobs = jobs.filter((job) => job.id !== jobId);
     setJobs(updatedJobs);
     localStorage.setItem("jobs", JSON.stringify(updatedJobs));
   };
@@ -38,7 +52,7 @@ function App() {
             path="/"
             element={<Dashboard jobs={jobs} deleteJob={deleteJob} />}
           />
-          <Route path="/form" element={<Form addJob={addJob} />} />
+          <Route path="/form" element={<Form addJob={addJob} updateJob={updateJob} />} />
         </Routes>
       </div>
     </Router>

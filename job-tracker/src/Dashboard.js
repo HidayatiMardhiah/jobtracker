@@ -1,8 +1,15 @@
 // Dashboard.js
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 function Dashboard({ jobs, deleteJob }) {
+   const navigate = useNavigate();
+
+   const handleEdit = (job) => {
+    navigate("/form", { state: { job } });
+   };
+
   return (
     <div className="dashboard-container">
       <h1>Job Application Tracker</h1>
@@ -42,6 +49,7 @@ function Dashboard({ jobs, deleteJob }) {
                   <td>{job.notes}</td>
                   <td>
                     <button onClick={() => deleteJob(index)}>Delete</button>
+                    <button onClick={() => handleEdit(job)}>Edit</button>
                   </td>
                 </tr>
               ) : null

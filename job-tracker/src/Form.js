@@ -1,38 +1,61 @@
 // Form.js
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./Form.css";
 
-function Form({ addJob }) {
+function Form({ addJob, updateJob }) {
   const navigate = useNavigate();
+  const location = useLocation();
+  const editingJob = location.state?.job; // Get job data if editing
+
+  const handleGoBack = () => { navigate(-1);};
 
   const [companyName, setCompanyName] = useState("");
-  const [location, setLocation] = useState("");
+  const [jobLocation, setJobLocation] = useState("");
   const [role, setRole] = useState("");
   const [selectedOption, setSelectedOption] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
   const [notes, setNotes] = useState("");
 
+  // Pre-fill form if editing
+  useEffect(() => {
+    if (editingJob) {
+      setCompanyName(editingJob.companyName || "");
+      setJobLocation(editingJob.location || "");
+      setRole(editingJob.role || "");
+      setSelectedOption(editingJob.selectedOption || "");
+      setSelectedDate(editingJob.selectedDate || "");
+      setNotes(editingJob.notes || "");
+    }
+  }, [editingJob]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const newJob = {
-      companyName,
-      location,
-      role,
+    const jobData = {
+      companyName: companyName.trim(),
+      location: jobLocation.trim(),
+      role: role.trim(),
       selectedOption,
       selectedDate,
-      notes,
+      notes: notes.trim(),
     };
 
-    addJob(newJob);
+    if (editingJob) {
+      // Update existing job
+      updateJob({ ...jobData, id: editingJob.id });
+    } else {
+      // Add new job
+      addJob(jobData);
+    }
+
     handleReset();
     navigate("/"); // go back to dashboard
   };
 
   const handleReset = () => {
     setCompanyName("");
-    setLocation("");
+    setJobLocation("");
     setRole("");
     setSelectedOption("");
     setSelectedDate("");
@@ -41,7 +64,8 @@ function Form({ addJob }) {
 
   return (
     <div className="form-container">
-      <h1>Job Details</h1>
+      <button onClick={handleGoBack}>Go Back</button>
+      <h1>{editingJob ? "Edit Job Details" : "Add Job Details"}</h1>
       <form onSubmit={handleSubmit}>
         <label htmlFor="companyname">Company Name</label>
         <input
@@ -57,8 +81,8 @@ function Form({ addJob }) {
         <input
           type="text"
           id="location"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
+          value={jobLocation}
+          onChange={(e) => setJobLocation(e.target.value)}
           placeholder="Enter Location"
           required
         />
@@ -120,7 +144,9 @@ function Form({ addJob }) {
           <button type="button" onClick={handleReset}>
             Reset
           </button>
-          <button type="submit">Submit</button>
+          <button type="submit">
+            {editingJob ? "Update Job" : "Submit"}
+          </button>
         </div>
       </form>
     </div>
